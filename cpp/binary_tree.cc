@@ -1,25 +1,29 @@
-#include <bits/stdc++.h>
-
 #include "binary_tree.h"
-#define print_cont(arr)        \
-    for (auto e : arr)         \
-        std::cout << e << " "; \
-    std::cout << std::endl;
 
 namespace algo
 {
-
     template <typename T>
     int BinaryTree<T>::Node::getDegree()
     {
         if (_right == nullptr and _left == nullptr)
             return 0;
-        else if (_right == nullptr)
-            return _left->getDegree() + 1;
-        else if (_left == nullptr)
-            return _right->getDegree() + 1;
+        else if (_left == nullptr or _right == nullptr)
+            return 1;
         else
-            return std::max(_left->getDegree(), _right->getDegree()) + 1;
+            return 2;
+    }
+
+    template <typename T>
+    int BinaryTree<T>::Node::getHeight()
+    {
+        if (_right == nullptr and _left == nullptr)
+            return 0;
+        else if (_right == nullptr)
+            return _left->getHeight() + 1;
+        else if (_left == nullptr)
+            return _right->getHeight() + 1;
+        else
+            return std::max(_left->getHeight(), _right->getHeight()) + 1;
     }
 
     template <typename T>
@@ -126,6 +130,12 @@ namespace algo
     BinaryTree<T> *BinaryTree<T>::Generator::generateWithPreAndInOrder(std::vector<T> preOrder, std::vector<T> inOrder)
     {
         return new BinaryTree<T>(Node::generateWithPreAndInOrder(preOrder, inOrder));
+    }
+
+    template <typename T>
+    int BinaryTree<T>::getTreeHeight()
+    {
+        return _root->getHeight();
     }
 
     template <typename T>
