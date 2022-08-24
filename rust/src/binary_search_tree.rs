@@ -1,3 +1,8 @@
+use std::path;
+
+#[path = "./binary_tree.rs"]
+mod binary_tree;
+
 pub struct Node<T: Copy> {
     _data: T,
     _left: Option<Box<Node<T>>>,
@@ -120,94 +125,31 @@ impl<T: Copy + std::cmp::PartialEq> Node<T> {
     }
 }
 
-impl<T: Copy + std::cmp::PartialEq + std::fmt::Debug> Node<T> {
-    pub fn create_binary_tree_from_pre_and_in_order_traversals(
-        pre_order: &[T],
-        in_order: &[T],
-    ) -> Node<T> {
-        assert_eq!(
-            pre_order.len(),
-            in_order.len(),
-            "Given traversals are not correct !"
-        );
-        if pre_order.len() == 1 {
-            return Node::create(pre_order[0], None, None);
+impl<T: Copy + std::cmp::PartialEq + std::cmp::PartialOrd> Node<T> {
+
+    pub fn create_from_insertion_array(array: Vec<T>) -> Self {
+        let mut root = Node::create(array[0], None, None);
+        for i in 1..array.len() {
+            root.insert(&array[i]);
         }
-
-        let index = in_order.iter().position(|&x| x == pre_order[0]).unwrap();
-        let left_in_order = &in_order[0..index];
-        let right_in_order = &in_order[index + 1..];
-
-        let left_pre_order = &pre_order[1..1 + left_in_order.len()];
-        let right_pre_order = &pre_order[1 + left_in_order.len()..];
-
-        let left: Option<Box<Node<T>>> = if left_in_order.is_empty() {
-            None
-        } else {
-            Some(Box::new(
-                Node::create_binary_tree_from_pre_and_in_order_traversals(
-                    left_pre_order,
-                    left_in_order,
-                ),
-            ))
-        };
-
-        let right: Option<Box<Node<T>>> = if right_in_order.is_empty() {
-            None
-        } else {
-            Some(Box::new(
-                Node::create_binary_tree_from_pre_and_in_order_traversals(
-                    right_pre_order,
-                    right_in_order,
-                ),
-            ))
-        };
-
-        Node::create(pre_order[0], left, right)
+        root
     }
 
-    pub fn create_binary_tree_from_post_and_in_order_traversals(
-        post_order: &[T],
-        in_order: &[T],
-    ) -> Node<T> {
-        assert_eq!(post_order.len(), in_order.len());
-        if post_order.len() == 1 {
-            return Node::create(post_order[0], None, None);
+    pub fn insert(&mut self, data: &T) {
+        if self._data == *data {
+            panic!("Given data is already in the tree");
+        } else if self._data < *data {
+            if self._left.is_none() {
+                self._left = Some(Box::new(Node::create(*data, None, None)));
+            } else {
+                self._left.as_mut().unwrap().insert(data);
+            }
+        } else {
+            if self._right.is_none() {
+                self._right = Some(Box::new(Node::create(*data, None, None)))
+            } else {
+                self._right.as_mut().unwrap().insert(data);
+            }
         }
-
-        let index = in_order
-            .iter()
-            .position(|&x| x == post_order[post_order.len() - 1])
-            .unwrap();
-        let left_in_order = &in_order[0..index];
-        let right_in_order = &in_order[index + 1..];
-
-        let right_post_order =
-            &post_order[post_order.len() - right_in_order.len() - 1..post_order.len() - 1];
-        let left_post_order = &post_order[0..post_order.len() - right_in_order.len() - 1];
-
-        let left: Option<Box<Node<T>>> = if left_in_order.is_empty() {
-            None
-        } else {
-            Some(Box::new(
-                Node::create_binary_tree_from_post_and_in_order_traversals(
-                    left_post_order,
-                    left_in_order,
-                ),
-            ))
-        };
-
-        let right: Option<Box<Node<T>>> = if right_in_order.is_empty() {
-            None
-        } else {
-            Some(Box::new(
-                Node::create_binary_tree_from_post_and_in_order_traversals(
-                    right_post_order,
-                    right_in_order,
-                ),
-            ))
-        };
-
-        Node::create(post_order[post_order.len() - 1], left, right)
     }
 }
