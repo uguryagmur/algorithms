@@ -24,18 +24,12 @@ impl<T: Copy + std::cmp::PartialEq + std::cmp::PartialOrd + std::fmt::Display> N
             panic!("Given data is already in the tree");
         } else if self._data > *data {
             if self._left.is_none() {
-                println!("current node is {}", self._data);
-                println!("next created node on left is {}", data);
-                println!("-------------------");
                 self._left = Some(Box::new(Node::create(*data, None, None)));
             } else {
                 self._left.as_mut().unwrap().insert(data);
             }
         } else {
             if self._right.is_none() {
-                println!("current node is {}", self._data);
-                println!("next created node on right is {}", data);
-                println!("-------------------");
                 self._right = Some(Box::new(Node::create(*data, None, None)))
             } else {
                 self._right.as_mut().unwrap().insert(data);

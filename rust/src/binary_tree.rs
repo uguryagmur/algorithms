@@ -1,6 +1,6 @@
 use std::default;
 
-pub struct Node<T: Copy+ std::fmt::Display> {
+pub struct Node<T: Copy + std::fmt::Display> {
     _data: T,
     _left: Option<Box<Node<T>>>,
     _right: Option<Box<Node<T>>>,
@@ -8,7 +8,6 @@ pub struct Node<T: Copy+ std::fmt::Display> {
 
 macro_rules! implement_binary_tree_attributes {
     ($struct:ident) => {
-
         impl<T: Copy + std::cmp::PartialEq + std::fmt::Display> $struct<T> {
             pub fn create(
                 data: T,
