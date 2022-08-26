@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, hash::Hash, vec};
 
 #[derive(Eq, Clone, Copy, Hash, PartialEq, Debug)]
 pub struct GraphNode<T> {
@@ -8,13 +8,19 @@ pub struct GraphNode<T> {
 
 impl GraphNode<usize> {
     pub fn create_with_id(data: usize) -> Self {
-        Self { _id: data, _data: data }
+        Self {
+            _id: data,
+            _data: data,
+        }
     }
 }
 
 impl<T> GraphNode<T> {
     pub fn create(id: usize, data: T) -> Self {
-        Self {_id: id, _data: data}
+        Self {
+            _id: id,
+            _data: data,
+        }
     }
 }
 
@@ -27,16 +33,39 @@ pub struct DirectedGraph<T> {
     _adj_list: HashMap<GraphNode<T>, Vec<GraphNode<T>>>,
 }
 
+
 impl<T: Copy + Clone + Eq + std::hash::Hash + std::fmt::Debug> UndirectedGraph<T> {
-    pub fn create(edges: &[(&GraphNode<T>, &GraphNode<T>)]) -> UndirectedGraph<T> {
-        let mut graph: UndirectedGraph<T> = UndirectedGraph {
+    pub fn new(num_nodes: usize, initial_data: T) -> Self {
+        let mut graph = Self {
             _adj_list: HashMap::new(),
         };
-        for i in 0..edges.len() {
-            graph.add_edge(edges[i].0, edges[i].1);
-            graph.add_edge(edges[i].1, edges[i].0);
+        for i in 0..num_nodes {
+            graph._adj_list.insert(
+                GraphNode {
+                    _id: i,
+                    _data: initial_data,
+                },
+                vec![],
+            );
         }
         graph
+    }
+
+    pub fn new_from_graph_node_vector(nodes: Vec<GraphNode<T>>) -> Self {
+        let mut graph = Self {
+            _adj_list: HashMap::new(),
+        };
+        for node in nodes {
+            graph._adj_list.insert(node, vec![]);
+        }
+        graph
+    }
+
+    pub fn add_edges(&mut self, edges: &[(&GraphNode<T>, &GraphNode<T>)]) {
+        for i in 0..edges.len() {
+            self.add_edge(edges[i].0, edges[i].1);
+            self.add_edge(edges[i].1, edges[i].0);
+        }
     }
 
     pub fn add_edge(&mut self, node1: &GraphNode<T>, node2: &GraphNode<T>) {
@@ -59,8 +88,8 @@ impl<T: Copy + Clone + Eq + std::hash::Hash + std::fmt::Debug> UndirectedGraph<T
         print!("\n");
     }
 
-    pub fn bfs(&self, source: GraphNode<T>){
-
+    pub fn bfs(&self, source: GraphNode<T>) {
+        let mut visited = vec![false; self._adj_list.len()];
     }
 
     fn _dfs(&self, source: &GraphNode<T>, visited: &mut Vec<bool>) {
