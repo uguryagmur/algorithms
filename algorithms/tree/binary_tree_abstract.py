@@ -14,6 +14,19 @@ class NodeAbstract(ABC):
         self.left = left_child
         self.right = right_child
 
+    def getDegree(self) -> int:
+        if self.left is None and self.right is None:
+            return 0
+        elif self.left is None or self.right is None:
+            return 1
+        else:
+            return 2
+
+    def getHeight(self) -> int:
+        left_degree: int = self.left.getHeight() + 1 if self.left else 0
+        right_degree: int = self.left.getHeight() + 1 if self.right else 0
+        return max(left_degree, right_degree)
+
     def traverse_in_order(self, traverse_list: Optional[list] = None) -> list:
         if traverse_list is None:
             traverse_list: list = list()

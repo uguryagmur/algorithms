@@ -14,8 +14,12 @@ class Node(NodeAbstract):
     @classmethod
     def create_with_pre_order_traversal(cls, pre_order_traversal: list) -> "Node":
         root = Node(pre_order_traversal[0])
-        left_pre_order: List[Node] = [e for e in pre_order_traversal if pre_order_traversal[0] > e]
-        right_pre_order: List[Node] = [e for e in pre_order_traversal if pre_order_traversal[0] < e]
+        left_pre_order: List[Node] = [
+            e for e in pre_order_traversal if pre_order_traversal[0] > e
+        ]
+        right_pre_order: List[Node] = [
+            e for e in pre_order_traversal if pre_order_traversal[0] < e
+        ]
 
         if left_pre_order:
             root.left = Node.create_with_pre_order_traversal(left_pre_order)
