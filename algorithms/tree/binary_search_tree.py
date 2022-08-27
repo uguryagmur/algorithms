@@ -13,18 +13,17 @@ class Node(NodeAbstract):
 
     @classmethod
     def create_with_pre_order_traversal(cls, pre_order_traversal: list) -> "Node":
-        stack: List["Node"] = list()
-        stack.append(Node(pre_order_traversal[0]))
-        for i in range(1, len(pre_order_traversal)):
-            print(f"stack state -> {[node._data for node in stack]}")
-            if stack[-1]._data > pre_order_traversal[i]:
-                stack[-1].left = Node(pre_order_traversal[i])
-                stack.append(stack[-1].left)
-            else:
-                stack.pop()
-                stack[-1].right = Node(pre_order_traversal[i])
-                stack.append(stack[-1].right)
-        return stack[0]
+        root = Node(pre_order_traversal[0])
+        left_pre_order: List[Node] = [e for e in pre_order_traversal if pre_order_traversal[0] > e]
+        right_pre_order: List[Node] = [e for e in pre_order_traversal if pre_order_traversal[0] < e]
+
+        if left_pre_order:
+            root.left = Node.create_with_pre_order_traversal(left_pre_order)
+
+        if right_pre_order:
+            root.right = Node.create_with_pre_order_traversal(right_pre_order)
+
+        return root
 
     def insert(self, data):
         if self._data < data:
