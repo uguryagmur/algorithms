@@ -44,3 +44,24 @@ class AbstractGraph(ABC):
             queue.pop(0)
 
         return traverse_list
+
+    def is_bipartite(
+        self,
+        source: Any,
+        parent_color: int = 2,
+        color_list: Optional[Dict[Any, int]] = None,
+    ) -> bool:
+        # for color list 0 -> unvisited, 1 -> color 1, 2 -> color 2
+        if color_list is None:
+            color_list = {k: 0 for k in self.adj_list}
+
+        color_list[source] = 3 - parent_color
+        for node in self.adj_list[source]:
+            if color_list[node] == 0:
+                if not self.is_bipartite(node, color_list[source], color_list):
+                    return False
+
+            elif color_list[node] == color_list[source]:
+                return False
+
+        return True

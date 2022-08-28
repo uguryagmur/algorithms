@@ -15,3 +15,13 @@ class UndirectedGraph(AbstractGraph):
         else:
             self.adj_list[node_2] = {node_1}
         self.visited[node_2] = False
+
+    def does_contain_cycle(self, source: Any, parent: Optional[Any] = None) -> bool:
+        self.visited[source] = True
+        for node in self.adj_list.get(source, []):
+            if not self.visited[node]:
+                if self.does_contain_cycle(node, source):
+                    return True
+            elif node != parent:
+                return True
+        return False
