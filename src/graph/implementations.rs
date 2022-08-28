@@ -20,6 +20,30 @@ impl<T> GraphNode<T> {
     }
 }
 
+impl<T> UndirectedGraph<T>
+where
+    T: Eq + Copy + std::hash::Hash,
+{
+    fn does_contain_cycle_util(
+        &self,
+        source: GraphNode<T>,
+        parent: Option<GraphNode<T>>,
+        visited: &mut HashMap<GraphNode<T>, bool>,
+    ) -> bool {
+        visited.insert(source, true);
+        for node in self._adj_list.get(&source).unwrap() {
+            if !visited.get(node).unwrap() {
+                if self.does_contain_cycle_util(*node, Some(source), visited) {
+                    return true;
+                }
+            } else if parent.is_some() && node._id != parent.unwrap()._id {
+                return true;
+            }
+        }
+        false
+    }
+}
+
 impl<T> Graph<T> for UndirectedGraph<T>
 where
     T: Eq + Copy + std::hash::Hash,
@@ -54,6 +78,41 @@ where
     }
 
     fn does_contain_cycle(&self) -> bool {
+        let mut visited = HashMap::new();
+        for node in self._adj_list.keys() {
+            visited.insert(*node, false);
+        }
+        let source = self._adj_list.keys().nth(0).unwrap();
+        self.does_contain_cycle_util(*source, None, &mut visited)
+    }
+}
+
+impl<T> DirectedGraph<T>
+where
+    T: Eq + Copy + std::hash::Hash,
+{
+    fn does_contain_cycle_util(
+        &self,
+        source: GraphNode<T>,
+        parent: Option<GraphNode<T>>,
+        visited: &mut HashMap<GraphNode<T>, bool>,
+        stack: &mut Vec<usize>,
+    ) -> bool {
+        visited.insert(source, true);
+        stack.push(source._id);
+        for node in self._adj_list.get(&source).unwrap() {
+            if !visited.get(node).unwrap() {
+                if self.does_contain_cycle_util(*node, Some(source), visited, stack) {
+                    return true;
+                }
+            } else if parent.is_some()
+                && node._id != parent.unwrap()._id
+                && stack.contains(&node._id)
+            {
+                return true;
+            }
+        }
+        stack.pop();
         false
     }
 }
@@ -89,6 +148,12 @@ where
     }
 
     fn does_contain_cycle(&self) -> bool {
-        false
+        let mut visited = HashMap::new();
+        for node in self._adj_list.keys() {
+            visited.insert(*node, false);
+        }
+        let source = self._adj_list.keys().nth(0).unwrap();
+        let mut stack: Vec<usize> = Vec::new();
+        self.does_contain_cycle_util(*source, None, &mut visited, &mut stack)
     }
 }

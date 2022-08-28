@@ -4,7 +4,7 @@ use std::collections::{HashMap, VecDeque};
 
 pub fn bfs<T>(graph: &impl Graph<T>, source: &GraphNode<T>) -> Vec<usize>
 where
-    T: Copy + Eq + std::hash::Hash + std::fmt::Debug,
+    T: Copy + Eq + std::hash::Hash,
 {
     let mut traverse_array: Vec<usize> = Vec::new();
     let mut visited: HashMap<GraphNode<T>, bool> = HashMap::new();
@@ -24,7 +24,6 @@ where
         }
 
         traverse_array.push(queue.pop_front().unwrap()._id);
-        println!("{:?}", queue);
     }
     traverse_array
 }
