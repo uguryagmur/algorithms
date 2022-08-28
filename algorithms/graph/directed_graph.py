@@ -1,9 +1,9 @@
 from .abstract_graph import AbstractGraph
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Dict, Hashable, Iterable, List, Optional, Set, Tuple
 
 
 class DirectedGraph(AbstractGraph):
-    def add_edge(self, node_1: Any, node_2: Any) -> None:
+    def add_edge(self, node_1: Hashable, node_2: Hashable) -> None:
         if self.adj_list.get(node_1, False):
             self.adj_list[node_1].add(node_2)
         else:
@@ -16,9 +16,9 @@ class DirectedGraph(AbstractGraph):
 
     def does_contain_cycle(
         self,
-        source: Any,
-        parent: Optional[Any] = None,
-        stack: Optional[Set[Any]] = None,
+        source: Hashable,
+        parent: Optional[Hashable] = None,
+        stack: Optional[Set[Hashable]] = None,
     ) -> bool:
         if stack is None:
             stack = set()
@@ -34,7 +34,7 @@ class DirectedGraph(AbstractGraph):
         stack.remove(source)
         return False
 
-    def sort_topologically(self) -> List[Any]:
+    def sort_topologically(self) -> List[Hashable]:
         if self.does_contain_cycle(list(self.adj_list.keys())[0]):
             raise RuntimeError("graph contains cycle, topological sort is not possible")
         self.clean_visited()
@@ -44,8 +44,8 @@ class DirectedGraph(AbstractGraph):
             for node in neighbours:
                 num_depends[node] += 1
 
-        topologic_sort_array: List[Any] = list()
-        queue: List[Any] = list()
+        topologic_sort_array: List[Hashable] = list()
+        queue: List[Hashable] = list()
 
         for node, num_depend in num_depends.items():
             if num_depend == 0:

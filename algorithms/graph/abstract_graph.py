@@ -1,24 +1,24 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Dict, Iterable, Hashable, List, Optional, Set, Tuple
 
 
 class AbstractGraph(ABC):
-    def __init__(self, edges: Optional[Iterable[Tuple[Any, Any]]]) -> None:
-        self.adj_list: Dict[Any, Set[Any]] = dict()
-        self.visited: Dict[Any, bool] = dict()
+    def __init__(self, edges: Optional[Iterable[Tuple[Hashable, Hashable]]]) -> None:
+        self.adj_list: Dict[Hashable, Set[Hashable]] = dict()
+        self.visited: Dict[Hashable, bool] = dict()
         if edges:
             for edge in edges:
                 self.add_edge(*edge)
 
     @abstractmethod
-    def add_edge(self, node_1: Any, node_2: Any) -> None:
+    def add_edge(self, node_1: Hashable, node_2: Hashable) -> None:
         raise NotImplementedError
 
     def clean_visited(self) -> None:
         for key in self.visited:
             self.visited[key] = False
 
-    def dfs(self, source: Any, traverse_list: Optional[List[Any]] = None) -> List[Any]:
+    def dfs(self, source: Hashable, traverse_list: Optional[List[Hashable]] = None) -> List[Hashable]:
         if traverse_list is None:
             traverse_list = list()
 
@@ -29,10 +29,10 @@ class AbstractGraph(ABC):
                 self.dfs(node, traverse_list)
         return traverse_list
 
-    def bfs(self, source: Any) -> List[Any]:
+    def bfs(self, source: Hashable) -> List[Hashable]:
         self.clean_visited()
-        traverse_list: List[Any] = list()
-        queue: List[Any] = list()
+        traverse_list: List[Hashable] = list()
+        queue: List[Hashable] = list()
         queue.append(source)
 
         while queue:
@@ -47,9 +47,9 @@ class AbstractGraph(ABC):
 
     def is_bipartite(
         self,
-        source: Any,
+        source: Hashable,
         parent_color: int = 2,
-        color_list: Optional[Dict[Any, int]] = None,
+        color_list: Optional[Dict[Hashable, int]] = None,
     ) -> bool:
         # for color list 0 -> unvisited, 1 -> color 1, 2 -> color 2
         if color_list is None:
