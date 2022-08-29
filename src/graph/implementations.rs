@@ -3,7 +3,7 @@ use super::traits::Graph;
 use std::collections::HashMap;
 
 impl GraphNode<usize> {
-    pub fn create_with_id(data: usize) -> Self {
+    pub const fn create_with_id(data: usize) -> Self {
         Self {
             _id: data,
             _data: data,
@@ -12,7 +12,7 @@ impl GraphNode<usize> {
 }
 
 impl<T> GraphNode<T> {
-    pub fn create(id: usize, data: T) -> Self {
+    pub const fn create(id: usize, data: T) -> Self {
         Self {
             _id: id,
             _data: data,
