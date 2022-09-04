@@ -37,3 +37,4 @@ void delete_graph(Graph *graph);
 void delete_traverse_array(TraverseArray *array);
 
 TraverseArray *dfs(Graph *graph, unsigned int source);
+TraverseArray *bfs(Graph *graph, unsigned int source);

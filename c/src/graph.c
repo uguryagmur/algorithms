@@ -1,6 +1,46 @@
 #include "graph.h"
 #include <memory.h>
 
+struct Queue
+{
+  unsigned int *queue;
+  unsigned int begin_index;
+  unsigned int last_index;
+};
+
+typedef struct Queue Queue;
+
+Queue *create_empty_queue(unsigned int size)
+{
+  Queue *queue = malloc(sizeof(Queue));
+  if (queue != NULL)
+  {
+    queue->queue = malloc(sizeof(unsigned int) * (size + 1));
+    memset(queue->queue, 0, size + 1);
+    queue->begin_index = 0;
+    queue->last_index = 0;
+  }
+  return queue;
+}
+
+void delete_queue(Queue *queue)
+{
+  free(queue->queue);
+  free(queue);
+}
+
+void enqueue(Queue *queue, unsigned int data)
+{
+  queue->queue[queue->last_index] = data;
+  queue->last_index += 1;
+}
+
+unsigned int dequeue(Queue *queue)
+{
+  queue->begin_index += 1;
+  return queue->queue[queue->begin_index - 1];
+}
+
 Graph *create_graph_without_edge(unsigned int num_nodes)
 {
   Graph *graph = (Graph *)malloc(sizeof(Graph));
@@ -97,5 +137,34 @@ TraverseArray *dfs(Graph *graph, unsigned int source)
   TraverseArray *traverse_array = create_traverse_array(graph->num_nodes);
   dfs_util(graph, source, traverse_array, visited);
   free(visited);
+  return traverse_array;
+}
+
+TraverseArray *bfs(Graph *graph, unsigned int source)
+{
+  TraverseArray *traverse_array = create_traverse_array(graph->num_nodes);
+
+  Queue *queue = create_empty_queue(graph->num_nodes);
+  bool *visited = malloc(sizeof(bool) * graph->num_nodes);
+  memset(visited, false, graph->num_nodes);
+  enqueue(queue, source);
+  visited[source] = true;
+
+  while (queue->begin_index < queue->last_index)
+  {
+    source = dequeue(queue);
+    traverse_array->array[traverse_array->index] = source;
+    traverse_array->index += 1;
+    for (int i = 0; i < graph->adj_list_length[source]; i++)
+    {
+      if (!visited[graph->adj_list[source][i]])
+      {
+        visited[graph->adj_list[source][i]] = true;
+        enqueue(queue, graph->adj_list[source][i]);
+      }
+    }
+  }
+  free(visited);
+  delete_queue(queue);
   return traverse_array;
 }

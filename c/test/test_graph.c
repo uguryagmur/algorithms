@@ -90,12 +90,34 @@ void test_dfs()
     delete_traverse_array(traverse_array);
 }
 
+void test_bfs()
+{
+    Edge edges[] = {
+        {0, 1},
+        {0, 2},
+        {1, 3},
+        {1, 5},
+        {2, 4},
+        {4, 5},
+    };
+    Graph *graph = create_graph(6, 6, edges, false);
+    TraverseArray *traverse_array = bfs(graph, 0);
+    int expexted_traversal_array[] = {0, 1, 2, 3, 5, 4};
+    for (int i = 0; i < graph->num_nodes; i++)
+    {
+        assert(traverse_array->array[i] == expexted_traversal_array[i]);
+    }
+    delete_graph(graph);
+    delete_traverse_array(traverse_array);
+}
+
 int main()
 {
     test_create_empty_graph();
     test_add_edge_to_graph();
     test_create_graph();
     test_dfs();
+    test_bfs();
     puts("All tests are passed successfully!");
     return EXIT_SUCCESS;
 }
