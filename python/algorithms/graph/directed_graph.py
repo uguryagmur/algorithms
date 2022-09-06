@@ -3,11 +3,11 @@ from typing import Dict, Hashable, Iterable, List, Optional, Set, Tuple
 
 
 class DirectedGraph(AbstractGraph):
-    def add_edge(self, node_1: Hashable, node_2: Hashable) -> None:
+    def add_edge(self, node_1: Hashable, node_2: Hashable, weight: int = 1) -> None:
         if self.adj_list.get(node_1, False):
-            self.adj_list[node_1].add(node_2)
+            self.adj_list[node_1].add((node_2, weight))
         else:
-            self.adj_list[node_1] = {node_2}
+            self.adj_list[node_1] = {(node_2, weight)}
         self.visited[node_1] = False
 
         if self.adj_list.get(node_2, None) is None:
@@ -25,7 +25,7 @@ class DirectedGraph(AbstractGraph):
 
         self.visited[source] = True
         stack.add(source)
-        for node in self.adj_list.get(source, []):
+        for node, _ in self.adj_list.get(source, []):
             if not self.visited[node]:
                 if self.does_contain_cycle(node, source, stack):
                     return True
@@ -41,7 +41,7 @@ class DirectedGraph(AbstractGraph):
 
         num_depends = {k: 0 for k in self.adj_list}
         for neighbours in self.adj_list.values():
-            for node in neighbours:
+            for node, _ in neighbours:
                 num_depends[node] += 1
 
         topologic_sort_array: List[Hashable] = list()
@@ -53,7 +53,7 @@ class DirectedGraph(AbstractGraph):
                 queue.append(node)
 
         while queue:
-            for node in self.adj_list[queue[0]]:
+            for node, _ in self.adj_list[queue[0]]:
                 num_depends[node] -= 1
 
             topologic_sort_array.append(queue.pop(0))
