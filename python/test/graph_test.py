@@ -1,4 +1,4 @@
-from algorithms.graph import UndirectedGraph, DirectedGraph
+from algorithms.graph import UndirectedGraph, DirectedGraph, find_dsu, union_dsu
 
 
 def test_undirected_graph_creation_with_edges():
@@ -150,3 +150,51 @@ def test_directed_graph_topological_sort():
     edges = [(0, 2), (1, 2), (1, 4), (2, 3), (3, 5), (4, 5)]
     graph = DirectedGraph(edges)
     graph.sort_topologically() == [0, 1, 2, 4, 3, 5]
+
+
+def test_find_dsu():
+    parent = [-1, 4, 1, 2, -1]
+    assert find_dsu(0, parent) == 0
+    assert find_dsu(3, parent) == 4
+    assert parent == [-1, 4, 4, 4, -1]
+
+
+def test_union_dsu():
+    parent = [-1, 4, 1, 2, -1]
+    union_dsu(3, 0, parent)
+    assert find_dsu(0, parent) == 4
+    assert find_dsu(3, parent) == 4
+    assert parent == [4, 4, 4, 4, -1]
+
+
+def test_get_minimum_spanning_tree():
+    edges = [
+        (0, 1, 10),
+        (0, 2, 12),
+        (1, 2, 9),
+        (1, 3, 8),
+        (2, 4, 3),
+        (2, 5, 1),
+        (3, 5, 10),
+        (3, 6, 8),
+        (3, 7, 5),
+        (4, 5, 3),
+        (5, 7, 6),
+        (6, 7, 9),
+        (6, 8, 2),
+        (7, 8, 11),
+    ]
+    graph = UndirectedGraph(edges)
+    print(graph.get_minimum_spanning_tree())
+    mst_edges = {
+        (2, 5, 1),
+        (6, 8, 2),
+        (4, 5, 3),
+        (3, 7, 5),
+        (1, 3, 8),
+        (0, 1, 10),
+        (3, 6, 8),
+        (5, 7, 6),
+    }
+    assert len(mst_edges) == 8
+    assert all([edge in mst_edges for edge in graph.get_minimum_spanning_tree()])

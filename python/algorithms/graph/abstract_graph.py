@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Iterable, Hashable, List, Optional, Set, Tuple, Union
-from xml.dom import minicompat
+
+from .util import find_dsu, union_dsu
 
 
 class AbstractGraph(ABC):
@@ -83,3 +84,14 @@ class AbstractGraph(ABC):
                 return False
 
         return True
+
+    def get_minimum_spanning_tree(self):
+        edges: List[Tuple[Hashable, Hashable, int]] = list(self.get_edges())
+        parent: List[int] = [-1 for _ in self.adj_list]
+        edges.sort(key=lambda x: x[2])
+        mst_edges: List[Tuple[Hashable, Hashable, int]] = list()
+        for edge in edges:
+            if find_dsu(edge[0], parent) != find_dsu(edge[1], parent):
+                mst_edges.append(edge)
+                union_dsu(edge[0], edge[1], parent)
+        return mst_edges
