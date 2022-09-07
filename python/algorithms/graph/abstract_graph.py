@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from turtle import distance
 from typing import Dict, Iterable, Hashable, List, Optional, Set, Tuple, Union
 
 from .util import find_dsu, union_dsu
@@ -95,3 +96,27 @@ class AbstractGraph(ABC):
                 mst_edges.append(edge)
                 union_dsu(edge[0], edge[1], parent)
         return mst_edges
+
+    def get_shortest_path_dijkstra(
+        self, start: Hashable, end: Hashable
+    ) -> Union[int, float]:
+        self.clean_visited()
+        distances: Dict[Hashable, Union[int, float]] = {
+            node: -1 for node in self.adj_list
+        }
+        queue: List[Hashable] = [start]
+        distances[start] = 0
+        self.visited[start] = True
+        while queue:
+            source = queue[0]
+            for node, weight in self.adj_list[source]:
+                if not self.visited[node]:
+                    queue.append(node)
+                    self.visited[node] = True
+                if (
+                    distances[node] == -1
+                    or weight + distances[source] < distances[node]
+                ):
+                    distances[node] = weight + distances[source]
+            queue.pop(0)
+        return distances[end] if distances[end] != -1 else float("inf")

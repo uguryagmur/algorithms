@@ -175,6 +175,7 @@ def test_get_minimum_spanning_tree():
         (1, 3, 8),
         (2, 4, 3),
         (2, 5, 1),
+        (3, 4, 7),
         (3, 5, 10),
         (3, 6, 8),
         (3, 7, 5),
@@ -185,7 +186,6 @@ def test_get_minimum_spanning_tree():
         (7, 8, 11),
     ]
     graph = UndirectedGraph(edges)
-    print(graph.get_minimum_spanning_tree())
     mst_edges = {
         (2, 5, 1),
         (6, 8, 2),
@@ -198,3 +198,28 @@ def test_get_minimum_spanning_tree():
     }
     assert len(mst_edges) == 8
     assert all([edge in mst_edges for edge in graph.get_minimum_spanning_tree()])
+
+
+def test_get_minimum_spanning_tree():
+    edges = [
+        (0, 1, 10),
+        (0, 2, 5),
+        (1, 2, 3),
+        (1, 3, 8),
+        (2, 4, 3),
+        (2, 5, 1),
+        (3, 4, 7),
+        (3, 5, 10),
+        (3, 6, 8),
+        (3, 7, 5),
+        (4, 5, 3),
+        (5, 7, 6),
+        (6, 7, 9),
+        (6, 8, 2),
+        (7, 8, 11),
+    ]
+    graph = UndirectedGraph(edges)
+    assert graph.get_shortest_path_dijkstra(0, 1) == 8
+    assert graph.get_shortest_path_dijkstra(0, 2) == 5
+    assert graph.get_shortest_path_dijkstra(0, 3) == 15
+    assert graph.get_shortest_path_dijkstra(0, 8) == 23
