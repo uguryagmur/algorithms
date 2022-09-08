@@ -30,3 +30,6 @@ class UndirectedGraph(AbstractGraph):
 
     def get_shortest_path_bellman_ford(self, start: Hashable, end: Hashable) -> float:
         return super().get_shortest_path_bellman_ford(start, end, False)
+
+    def get_all_shortest_paths_floyd_marshall(self) -> List[List[float]]:
+        return super().get_all_shortest_paths_floyd_marshall(False)

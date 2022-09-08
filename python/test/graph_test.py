@@ -249,6 +249,7 @@ def test_shortest_path_bellman_ford_with_positive_edges():
     assert graph.get_shortest_path_bellman_ford(0, 3) == 15
     assert graph.get_shortest_path_bellman_ford(0, 8) == 23
 
+
 def test_shortest_path_bellman_ford_with_positive_edges():
     edges = [
         (0, 1, 10),
@@ -272,3 +273,36 @@ def test_shortest_path_bellman_ford_with_positive_edges():
     assert graph.get_shortest_path_bellman_ford(0, 2) == 5
     assert graph.get_shortest_path_bellman_ford(0, 3) == 18
     assert graph.get_shortest_path_bellman_ford(0, 8) == 14
+
+
+def test_floyd_marshall_algorithm():
+    edges = [
+        (0, 1, 10),
+        (0, 2, 5),
+        (1, 2, 3),
+        (1, 3, 8),
+        (2, 4, 3),
+        (2, 5, 1),
+        (3, 4, 7),
+        (3, 5, 10),
+        (3, 6, 8),
+        (3, 7, 5),
+        (4, 5, 3),
+        (5, 7, 6),
+        (6, 7, 9),
+        (6, 8, 2),
+        (7, 8, 11),
+    ]
+    graph = UndirectedGraph(edges)
+    expected_result = [
+        [0, 8.0, 5.0, 15.0, 8.0, 6.0, 21.0, 12.0, 23.0],
+        [8.0, 0, 3.0, 8.0, 6.0, 4.0, 16.0, 10.0, 18.0],
+        [5.0, 3.0, 0, 10.0, 3.0, 1.0, 16.0, 7.0, 18.0],
+        [15.0, 8.0, 10.0, 0, 7.0, 10.0, 8.0, 5.0, 10.0],
+        [8.0, 6.0, 3.0, 7.0, 0, 3.0, 15.0, 9.0, 17.0],
+        [6.0, 4.0, 1.0, 10.0, 3.0, 0, 15.0, 6.0, 17.0],
+        [21.0, 16.0, 16.0, 8.0, 15.0, 15.0, 0, 9.0, 2.0],
+        [12.0, 10.0, 7.0, 5.0, 9.0, 6.0, 9.0, 0, 11.0],
+        [23.0, 18.0, 18.0, 10.0, 17.0, 17.0, 2.0, 11.0, 0],
+    ]
+    assert expected_result == graph.get_all_shortest_paths_floyd_marshall()

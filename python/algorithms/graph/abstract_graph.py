@@ -117,7 +117,9 @@ class AbstractGraph(ABC):
             queue.pop(0)
         return distances[end] if distances[end] != -1 else float("inf")
 
-    def get_shortest_path_bellman_ford(self, start: Hashable, end: Hashable, is_directed: bool) -> float:
+    def get_shortest_path_bellman_ford(
+        self, start: Hashable, end: Hashable, is_directed: bool
+    ) -> float:
         edges: List[Tuple[Hashable, Hashable, float]] = self.get_edges()
         distances: Dict[Hashable, float] = {key: float("inf") for key in self.adj_list}
         distances[start] = 0
@@ -130,3 +132,29 @@ class AbstractGraph(ABC):
                     if distances[d] != float("inf") and distances[d] + w < distances[s]:
                         distances[s] = distances[d] + w
         return distances[end]
+
+    def get_all_shortest_paths_floyd_marshall(
+        self, is_directed: bool
+    ) -> List[List[float]]:
+        n: int = len(self.adj_list)
+        distances: List[List[float]] = [
+            [float("inf") for _ in range(n)] for _ in range(n)
+        ]
+        for edge in self.get_edges():
+            distances[edge[0]][edge[1]] = edge[2]
+            if not is_directed:
+                distances[edge[1]][edge[0]] = edge[2]
+        for i in range(n):
+            distances[i][i] = 0
+
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    if distances[i][j] > distances[i][k] + distances[k][j]:
+                        distances[i][j] = distances[i][k] + distances[k][j]
+
+                    if not is_directed:
+                        if distances[j][i] > distances[j][k] + distances[k][i]:
+                            distances[j][i] = distances[j][k] + distances[k][i]
+
+        return distances
