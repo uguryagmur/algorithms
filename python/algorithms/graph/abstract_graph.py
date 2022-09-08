@@ -10,12 +10,12 @@ class AbstractGraph(ABC):
         self,
         edges: Optional[
             Union[
-                Iterable[Tuple[Hashable, Hashable, int]],
+                Iterable[Tuple[Hashable, Hashable, float]],
                 Iterable[Tuple[Hashable, Hashable]],
             ]
         ],
     ) -> None:
-        self.adj_list: Dict[Hashable, Set[Tuple[Hashable, int]]] = dict()
+        self.adj_list: Dict[Hashable, Set[Tuple[Hashable, float]]] = dict()
         self.visited: Dict[Hashable, bool] = dict()
         if edges:
             for edge in edges:
@@ -87,23 +87,19 @@ class AbstractGraph(ABC):
         return True
 
     def get_minimum_spanning_tree(self):
-        edges: List[Tuple[Hashable, Hashable, int]] = list(self.get_edges())
+        edges: List[Tuple[Hashable, Hashable, float]] = list(self.get_edges())
         parent: List[int] = [-1 for _ in self.adj_list]
         edges.sort(key=lambda x: x[2])
-        mst_edges: List[Tuple[Hashable, Hashable, int]] = list()
+        mst_edges: List[Tuple[Hashable, Hashable, float]] = list()
         for edge in edges:
             if find_dsu(edge[0], parent) != find_dsu(edge[1], parent):
                 mst_edges.append(edge)
                 union_dsu(edge[0], edge[1], parent)
         return mst_edges
 
-    def get_shortest_path_dijkstra(
-        self, start: Hashable, end: Hashable
-    ) -> Union[int, float]:
+    def get_shortest_path_dijkstra(self, start: Hashable, end: Hashable) -> float:
         self.clean_visited()
-        distances: Dict[Hashable, Union[int, float]] = {
-            node: -1 for node in self.adj_list
-        }
+        distances: Dict[Hashable, float] = {node: -1 for node in self.adj_list}
         queue: List[Hashable] = [start]
         distances[start] = 0
         self.visited[start] = True
@@ -120,3 +116,17 @@ class AbstractGraph(ABC):
                     distances[node] = weight + distances[source]
             queue.pop(0)
         return distances[end] if distances[end] != -1 else float("inf")
+
+    def get_shortest_path_bellman_ford(self, start: Hashable, end: Hashable, is_directed: bool) -> float:
+        edges: List[Tuple[Hashable, Hashable, float]] = self.get_edges()
+        distances: Dict[Hashable, float] = {key: float("inf") for key in self.adj_list}
+        distances[start] = 0
+        for _ in range(len(self.adj_list) - 1):
+            for edge in edges:
+                s, d, w = edge
+                if distances[s] != float("inf") and distances[s] + w < distances[d]:
+                    distances[d] = distances[s] + w
+                if not is_directed:
+                    if distances[d] != float("inf") and distances[d] + w < distances[s]:
+                        distances[s] = distances[d] + w
+        return distances[end]
