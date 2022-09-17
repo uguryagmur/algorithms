@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from turtle import distance
 from typing import Dict, Iterable, Hashable, List, Optional, Set, Tuple, Union
 
 from .util import find_dsu, union_dsu
